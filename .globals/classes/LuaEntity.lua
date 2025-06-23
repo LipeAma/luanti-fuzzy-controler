@@ -1,0 +1,15 @@
+---@meta
+---@class LuaEntity: ObjectRef
+---@field remove fun(self: LuaEntity) Removes the object. The `ObjectRef` becomes unusable instantly.
+---@field set_velocity fun(self: LuaEntity, vel: vector) Sets the velocity.
+---@field set_acceleration fun(self: LuaEntity, acc: vector) Sets the acceleration.
+---@field get_acceleration fun(self: LuaEntity):vector Returns the acceleration as a vector.
+---@field set_rotation fun(self: LuaEntity, rot: vector) Sets the rotation.
+---@field get_rotation fun(self: LuaEntity):vector Returns the rotation as a vector in radians.
+---@field set_yaw fun(self: LuaEntity, yaw: number) Sets the yaw in radians (heading).
+---@field get_yaw fun(self: LuaEntity):number Returns the yaw in radians.
+---@field set_texture_mod fun(self: LuaEntity, mod: string) Sets a texture modifier to the base texture.
+---@field get_texture_mod fun(self: LuaEntity):string Returns current texture modifier.
+---@field set_sprite fun(self: LuaEntity, start_frame?: {x:number, y:number}, num_frames?: number, framelength?: number, select_x_by_camera?: boolean) Specifies and starts a sprite animation. Only for `sprite` and `upright_sprite` visuals.
+---@field get_luaentity fun(self: LuaEntity):table? Returns the object's associated luaentity table, or nil for non-entities.
+

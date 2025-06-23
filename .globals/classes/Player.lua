@@ -1,0 +1,60 @@
+---@meta
+---@class Player: ObjectRef
+---@field get_player_name fun(self: Player):string Returns player name or `""` if not a player.
+---@field get_look_dir fun(self: Player):vector Gets camera direction as a unit vector.
+---@field get_look_vertical fun(self: Player):number Gets look pitch in radians. Ranges between -pi/2 (up) and pi/2 (down).
+---@field get_look_horizontal fun(self: Player):number Gets look yaw in radians. Angle is counter-clockwise from the +z direction.
+---@field set_look_vertical fun(self: Player, radians: number) Sets look pitch in radians. Positive is downwards.
+---@field set_look_horizontal fun(self: Player, radians: number) Sets look yaw in radians. Positive is counter-clockwise from +z.
+---@field get_breath fun(self: Player):number Returns player's breath level.
+---@field set_breath fun(self: Player, value: number) Sets player's breath level. Limited to range 0 - 65535.
+---@field set_fov fun(self: Player, fov: number, is_multiplier?: boolean, transition_time?: number) Sets player's Field of View (FOV). Set fov to 0 to clear override.
+---@field get_fov fun(self: Player):number, boolean, number Returns the server-set FOV parameters.
+---@field get_meta fun(self: Player):PlayerMetaRef Returns metadata associated with the player.
+---@field set_inventory_formspec fun(self: Player, formspec: string) Redefines player's inventory form. Use `""` to disable inventory.
+---@field get_inventory_formspec fun(self: Player):string Returns the player's inventory formspec string.
+---@field set_formspec_prepend fun(self: Player, formspec: string) Prepends a formspec string to every formspec shown to the user.
+---@field get_formspec_prepend fun(self: Player):string Returns the prepended formspec string.
+---@field get_player_control fun(self: Player):{ up:boolean, down:boolean, left:boolean, right:boolean, jump:boolean, aux1:boolean, sneak:boolean, dig:boolean, place:boolean, LMB:boolean, RMB:boolean, zoom:boolean, movement_x:number, movement_y:number } Returns a table with player input state.
+---@field get_player_control_bits fun(self: Player):number Returns an integer with bit-packed player pressed keys.
+---@field set_physics_override fun(self: Player, override_table: PhysicsOverrideTable) Overrides the physics attributes of the player.
+---@field get_physics_override fun(self: Player):PhysicsOverrideTable Returns the table given to `set_physics_override`.
+---@field hud_add fun(self: Player, hud_definition: table):number Adds a HUD element. Returns ID number on success.
+---@field hud_remove fun(self: Player, id: number) Removes a HUD element by its ID.
+---@field hud_change fun(self: Player, id: number, stat: string, value: any) Changes a value of a previously added HUD element.
+---@field hud_get fun(self: Player, id: number):table Gets the HUD element definition of the specified ID.
+---@field hud_get_all fun(self: Player):table<number, table> Returns a table of all HUD elements: `{ [id] = HUD_definition, ... }`.
+---@field hud_set_flags fun(self: Player, flags: {hotbar?:boolean, healthbar?:boolean, crosshair?:boolean, wielditem?:boolean, breathbar?:boolean, minimap?:boolean, minimap_radar?:boolean, basic_debug?:boolean, chat?:boolean}) Sets specified HUD flags for the player.
+---@field hud_get_flags fun(self: Player):table<string, boolean> Returns a table of player HUD flags.
+---@field hud_set_hotbar_itemcount fun(self: Player, count: number) Sets number of items in the builtin hotbar. Must be between 1 and 32.
+---@field hud_get_hotbar_itemcount fun(self: Player):number Returns number of visible items in the hotbar.
+---@field hud_set_hotbar_image fun(self: Player, texturename: string) Sets background image for the hotbar.
+---@field hud_get_hotbar_image fun(self: Player):string Returns the hotbar background texture name.
+---@field hud_set_hotbar_selected_image fun(self: Player, texturename: string) Sets the image for the selected item of the hotbar.
+---@field hud_get_hotbar_selected_image fun(self: Player):string Returns the hotbar selected item texture name.
+---@field set_minimap_modes fun(self: Player, modes: table[], selected_mode: number) Overrides the available minimap modes and changes the selected mode.
+---@field set_sky fun(self: Player, sky_parameters?: SkyParameters) Sets sky parameters. Pass no arguments to reset to default.
+---@field get_sky fun(self: Player, as_table?: boolean):SkyParameters Returns the current sky parameters.
+---@field set_sun fun(self: Player, sun_parameters?: SunParameters) Sets sun parameters. Pass no arguments to reset to default.
+---@field get_sun fun(self: Player):SunParameters Returns a table with the current sun parameters.
+---@field set_moon fun(self: Player, moon_parameters?: MoonParameters) Sets moon parameters. Pass no arguments to reset to default.
+---@field get_moon fun(self: Player):MoonParameters Returns a table with the current moon parameters.
+---@field set_stars fun(self: Player, star_parameters?: StarParameters) Sets stars parameters. Pass no arguments to reset to default.
+---@field get_stars fun(self: Player):StarParameters Returns a table with the current stars parameters.
+---@field set_clouds fun(self: Player, cloud_parameters?: CloudParameters) Sets cloud parameters. Pass no arguments to reset to default.
+---@field get_clouds fun(self: Player):CloudParameters Returns a table with the current cloud parameters.
+---@field override_day_night_ratio fun(self: Player, ratio?: number) Overrides day-night ratio, controlling sunlight. Pass nil to disable override.
+---@field get_day_night_ratio fun(self: Player):number? Returns the overridden day-night ratio, or nil if not overridden.
+---@field set_local_animation fun(self: Player, idle: {x:number, y:number}, walk: {x:number, y:number}, dig: {x:number, y:number}, walk_while_dig: {x:number, y:number}, frame_speed?: number) Sets animation for the player model in third-person view.
+---@field get_local_animation fun(self: Player):{x:number,y:number}, {x:number,y:number}, {x:number,y:number}, {x:number,y:number}, number Returns idle, walk, dig, walk_while_dig tables and frame_speed.
+---@field set_eye_offset fun(self: Player, firstperson?: vector, thirdperson_back?: vector, thirdperson_front?: vector) Sets camera offset vectors.
+---@field get_eye_offset fun(self: Player):vector, vector, vector Returns camera offset vectors.
+---@field set_camera fun(self: Player, params: {mode: "any"|"first"|"third"|"third_front"}) Sets camera parameters.
+---@field get_camera fun(self: Player):table Returns the camera parameters.
+---@field send_mapblock fun(self: Player, blockpos: vector):boolean Sends an already loaded mapblock to the player. Returns false if nothing was sent.
+---@field set_lighting fun(self: Player, light_definition?: LightingParameters) Sets lighting for the player. Pass no arguments to reset.
+---@field get_lighting fun(self: Player):LightingParameters Returns the current state of lighting for the player.
+---@field respawn fun(self: Player) Respawns the player, calling `on_respawnplayer` callbacks.
+---@field get_flags fun(self: Player):{breathing: boolean, drowning: boolean, node_damage: boolean} Returns a table of player flags.
+---@field set_flags fun(self: Player, flags: {breathing?: boolean, drowning?: boolean, node_damage?: boolean}) Sets player flags. Absent fields are left unchanged.
+

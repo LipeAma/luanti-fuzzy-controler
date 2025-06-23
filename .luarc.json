@@ -1,0 +1,10 @@
+{
+    "Lua.diagnostics.globals": [
+        "core",
+    ],
+    "Lua.workspace.library": [
+        // Add the path to your globals directory here
+        "./.globals"
+    ],
+    "Lua.workspace.checkThirdParty": false
+}

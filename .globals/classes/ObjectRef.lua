@@ -1,0 +1,39 @@
+---@meta
+---@class ObjectRef
+---@field is_valid fun(self: ObjectRef):boolean Returns whether the object is valid and has not been unloaded or removed.
+---@field get_pos fun(self: ObjectRef):vector Returns position as vector `{x=num, y=num, z=num}`.
+---@field set_pos fun(self: ObjectRef, pos: vector) Sets the position of the object. No-op if object is attached.
+---@field add_pos fun(self: ObjectRef, pos: vector) Changes position by adding to the current position. Avoids synchronization problems. No-op if object is attached.
+---@field get_velocity fun(self: ObjectRef):vector Returns the velocity as a vector.
+---@field add_velocity fun(self: ObjectRef, vel: vector) Changes velocity by adding to the current velocity.
+---@field move_to fun(self: ObjectRef, pos: vector, continuous?: boolean) Does an interpolated move for Lua entities for visually smooth transitions. For players this does the same as `set_pos`.
+---@field punch fun(self: ObjectRef, puncher?: ObjectRef, time_from_last_punch?: number, tool_capabilities?: table, dir?: vector) Punches the object, triggering all consequences a normal punch would have.
+---@field right_click fun(self: ObjectRef, clicker: ObjectRef) Simulates using the 'place/use' key on the object.
+---@field get_hp fun(self: ObjectRef):number Returns number of health points.
+---@field set_hp fun(self: ObjectRef, hp: number, reason?: PlayerHPChangeReason) Sets the number of health points. Limited to the range 0 - 65535.
+---@field get_inventory fun(self: ObjectRef):InvRef? Returns an `InvRef` for players, otherwise returns `nil`.
+---@field get_wield_list fun(self: ObjectRef):string Returns the name of the inventory list the wielded item is in.
+---@field get_wield_index fun(self: ObjectRef):number Returns the wield list index of the wielded item (starting with 1).
+---@field get_wielded_item fun(self: ObjectRef):ItemStack Returns a copy of the wielded item as an ItemStack.
+---@field set_wielded_item fun(self: ObjectRef, item: ItemStack):boolean Replaces the wielded item, returns `true` if successful.
+---@field get_armor_groups fun(self: ObjectRef):table<string, number> Returns a table with all of the object's armor group ratings.
+---@field set_armor_groups fun(self: ObjectRef, groups: table<string, number>) Sets the object's full list of armor groups. All groups not in the table will be removed.
+---@field set_animation fun(self: ObjectRef, frame_range: {x: number, y: number}, frame_speed?: number, frame_blend?: number, frame_loop?: boolean) Sets the object animation parameters and (re)starts the animation.
+---@field get_animation fun(self: ObjectRef):{x: number, y: number}, number, number, boolean Returns current animation parameters set by `set_animation`.
+---@field set_animation_frame_speed fun(self: ObjectRef, frame_speed: number) Sets the frame speed of the object's animation without restarting it.
+---@field set_attach fun(self: ObjectRef, parent: ObjectRef, bone?: string, position?: vector, rotation?: vector, forced_visible?: boolean) Attaches object to a parent ObjectRef, optionally to a specific bone.
+---@field get_attach fun(self: ObjectRef):ObjectRef?, string?, vector?, vector?, boolean? Returns current attachment parameters or nil if it isn't attached.
+---@field get_children fun(self: ObjectRef):ObjectRef[] Returns a list of ObjectRefs that are attached to this object.
+---@field set_detach fun(self: ObjectRef) Detaches object. No-op if object was not attached.
+---@field set_bone_override fun(self: ObjectRef, bone: string, override?: BoneOverride) Sets an override for a bone's position, rotation, or scale. Note: Rotation is in radians.
+---@field get_bone_override fun(self: ObjectRef, bone: string):BoneOverride Returns the override for a specific bone. Note: Returned rotation is in radians.
+---@field get_bone_overrides fun(self: ObjectRef):table<string, BoneOverride> Returns all bone overrides as a table `{[bonename] = override, ...}`.
+---@field set_properties fun(self: ObjectRef, properties: table) Sets multiple object properties at once.
+---@field get_properties fun(self: ObjectRef):table Returns a table of all object properties.
+---@field set_observers fun(self: ObjectRef, observers?: table<string, true>) Sets observers (players this object is sent to). If nil, observers are unmanaged.
+---@field get_observers fun(self: ObjectRef):table<string, true>? Returns a set of observer names, or nil if observers are unmanaged. Throws an error if the object is invalid.
+---@field get_effective_observers fun(self: ObjectRef):table<string, true>? Like `get_observers()`, but returns the "effective" observers, taking into account attachments.
+---@field is_player fun(self: ObjectRef):boolean Returns true for players, false otherwise.
+---@field get_nametag_attributes fun(self: ObjectRef):NametagAttributes Returns a table with the attributes of the nametag of an object.
+---@field set_nametag_attributes fun(self: ObjectRef, attributes: NametagAttributes) Sets the attributes of the nametag of an object.
+

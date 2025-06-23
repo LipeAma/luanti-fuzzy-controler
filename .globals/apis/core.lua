@@ -1,0 +1,339 @@
+---@meta
+---@class core
+---@field get_current_modname fun():string? Returns the currently loading mod's name.
+---@field get_modpath fun(modname: string):string? Returns the directory path for a mod.
+---@field get_modnames fun():string[] Returns a list of enabled mods, sorted alphabetically.
+---@field get_game_info fun():LuantiGameInfo Returns a table containing information about the current game.
+---@field get_worldpath fun():string Returns the path to the current world's directory.
+---@field get_mod_data_path fun():string Returns the path for a mod's private data directory.
+---@field is_singleplayer fun():boolean Returns whether the server is in singleplayer mode.
+---@field features table<string, boolean> Table containing server-side API feature flags.
+---@field has_feature fun(arg: string|table<string, true>):(boolean, table<string, true>?) Checks for server-side feature availability.
+---@field get_player_information fun(player_name: string):LuantiPlayerInformation? Returns a table containing information about a player.
+---@field protocol_versions table<string, number> Table mapping Luanti versions to corresponding protocol versions.
+---@field get_player_window_information fun(player_name: string):LuantiPlayerWindowInformation? Returns a table containing information about a player's window.
+---@field mkdir fun(path: string):boolean Creates a directory, including parent directories if they don't exist.
+---@field rmdir fun(path: string, recursive?: boolean):boolean Removes a directory.
+---@field cpdir fun(source: string, destination: string):boolean Copies a directory.
+---@field mvdir fun(source: string, destination: string):boolean Moves a directory.
+---@field get_dir_list fun(path: string, is_dir?: boolean):string[] Returns a list of entries in a directory.
+---@field safe_file_write fun(path: string, content: string):boolean Replaces contents of a file in a safe (atomic) way.
+---@field get_version fun():LuantiVersionInfo Returns a table containing components of the engine version.
+---@field sha1 fun(data: string, raw?: boolean):string Returns the sha1 hash of data.
+---@field sha256 fun(data: string, raw?: boolean):string Returns the sha256 hash of data.
+---@field colorspec_to_colorstring fun(colorspec: ColorSpec):ColorString? Converts a ColorSpec to a ColorString.
+---@field colorspec_to_bytes fun(colorspec: ColorSpec):string Converts a ColorSpec to a raw string of four bytes (RGBA).
+---@field colorspec_to_table fun(colorspec: ColorSpec):{r:number, g:number, b:number, a:number}? Converts a ColorSpec into an RGBA table.
+---@field time_to_day_night_ratio fun(time_of_day: number):number Converts a "time of day" value to a "day-night ratio".
+---@field encode_png fun(width: number, height: number, data: string|ColorSpec[], compression?: number):string Encodes a PNG image and returns it in string form.
+---@field urlencode fun(str: string):string Encodes reserved URI characters.
+---@field log fun(level: '"none"'|'"error"'|'"warning"'|'"action"'|'"info"'|'"verbose"'|string, text?: string) Logs a message with a specific log level.
+---@field debug fun(...) Logs a message with tab-separated values.
+---@field register_node fun(name: string, nodedef: table) Registers a node with its definition. Must be called at load time.
+---@field register_craftitem fun(name: string, itemdef: table) Registers an item with its definition. Must be called at load time.
+---@field register_tool fun(name: string, tooldef: table) Registers a tool item with its definition. Must be called at load time.
+---@field override_item fun(name: string, redefinition: table, del_fields?: string[]) Overrides fields of a previously registered item. Must be called at load time.
+---@field unregister_item fun(name: string) Unregisters an item from the engine.
+---@field register_entity fun(name: string, entity_definition: table) Registers a Lua entity.
+---@field register_abm fun(abm_definition: table) Registers an Active Block Modifier (ABM).
+---@field register_lbm fun(lbm_definition: table) Registers a L-system Block Modifier (LBM).
+---@field register_alias fun(alias: string, original_name: string) Registers an alias for an item.
+---@field register_alias_force fun(alias: string, original_name: string) Registers an alias, forcing overwrite if the alias already exists.
+---@field register_ore fun(ore_definition: table):integer Registers an ore type for map generation.
+---@field register_biome fun(biome_definition: table):integer Registers a biome for map generation.
+---@field unregister_biome fun(name: string) Unregisters a biome.
+---@field register_decoration fun(decoration_definition: table):integer Registers a decoration for map generation.
+---@field register_schematic fun(schematic_definition: table|string):integer Registers a schematic.
+---@field clear_registered_biomes fun() Clears all registered biomes.
+---@field clear_registered_decorations fun() Clears all registered decorations.
+---@field clear_registered_ores fun() Clears all registered ores.
+---@field clear_registered_schematics fun() Clears all registered schematics.
+---@field register_craft fun(recipe: table) Registers a crafting recipe.
+---@field clear_craft fun(recipe: table):boolean Clears a crafting recipe based on its output or input.
+---@field register_chatcommand fun(cmd: string, chatcommand_def: ChatCommandDefinition) Registers a chat command.
+---@field override_chatcommand fun(name: string, redefinition: table) Overrides an existing chat command.
+---@field unregister_chatcommand fun(name: string) Unregisters a chat command.
+---@field register_privilege fun(name: string, definition: string|table) Registers a new privilege.
+---@field register_authentication_handler fun(auth_handler_def: table) Registers a custom authentication handler.
+---@field register_globalstep fun(func: fun(dtime: number)) Registers a callback to be called on every server step.
+---@field register_on_mods_loaded fun(func: fun()) Registers a callback to be called after all mods have loaded.
+---@field register_on_shutdown fun(func: fun()) Registers a callback to be called before server shutdown.
+---@field register_on_placenode fun(func: OnPlaceNodeCallback) Registers a callback to be called when a node is placed.
+---@field register_on_dignode fun(func: OnDigNodeCallback) Registers a callback to be called when a node is dug.
+---@field register_on_punchnode fun(func: OnPunchNodeCallback) Registers a callback to be called when a node is punched.
+---@field register_on_generated fun(func: OnGeneratedCallback) Registers a callback to be called after a map chunk is generated.
+---@field register_on_newplayer fun(func: OnNewPlayerCallback) Registers a callback to be called when a new player joins for the first time.
+---@field register_on_punchplayer fun(func: OnPunchPlayerCallback) Registers a callback to be called when a player is punched.
+---@field register_on_rightclickplayer fun(func: OnRightClickPlayerCallback) Registers a callback to be called when a player is right-clicked.
+---@field register_on_player_hpchange fun(func: OnHpChangeCallback, modifier?: boolean) Registers a callback for when a player's HP changes.
+---@field register_on_dieplayer fun(func: OnDiePlayerCallback) Registers a callback for when a player dies.
+---@field register_on_respawnplayer fun(func: OnRespawnPlayerCallback) Registers a callback for when a player is about to respawn.
+---@field register_on_prejoinplayer fun(func: OnPreJoinPlayerCallback) Registers a callback for when a client connects, before authentication.
+---@field register_on_joinplayer fun(func: OnJoinPlayerCallback) Registers a callback to be called when a player joins.
+---@field register_on_leaveplayer fun(func: OnLeavePlayerCallback) Registers a callback for when a player leaves the game.
+---@field register_on_authplayer fun(func: OnAuthPlayerCallback) Registers a callback for when a player authentication attempt occurs.
+---@field register_on_cheat fun(func: OnCheatCallback) Registers a callback for when a player cheat is detected.
+---@field register_on_chat_message fun(func: OnChatMessageCallback) Registers a callback for when a chat message is received.
+---@field register_on_chatcommand fun(func: OnChatCommandCallback) Registers a callback for when any chat command is triggered.
+---@field register_on_player_receive_fields fun(func: OnPlayerReceiveFieldsCallback) Registers a callback for when formspec fields are received.
+---@field register_on_craft fun(func: OnCraftCallback) Registers a callback for when a player crafts an item.
+---@field register_craft_predict fun(func: CraftPredictCallback) Registers a callback for craft prediction.
+---@field register_allow_player_inventory_action fun(func: AllowPlayerInventoryActionCallback) Registers a callback to limit inventory actions.
+---@field register_on_player_inventory_action fun(func: OnPlayerInventoryActionCallback) Registers a callback for after an inventory action occurs.
+---@field register_on_protection_violation fun(func: OnProtectionViolationCallback) Registers a callback for when a protection violation is recorded.
+---@field register_on_item_eat fun(func: OnItemEatCallback) Registers a callback for when an item is eaten.
+---@field register_on_item_pickup fun(func: OnItemPickupCallback) Registers a callback for when an item is picked up.
+---@field register_on_priv_grant fun(func: OnPrivGrantCallback) Registers a callback for when a privilege is granted.
+---@field register_on_priv_revoke fun(func: OnPrivRevokeCallback) Registers a callback for when a privilege is revoked.
+---@field register_can_bypass_userlimit fun(func: CanBypassUserlimitCallback) Registers a callback to allow a user to bypass the player limit.
+---@field register_on_modchannel_message fun(func: OnModChannelMessageCallback) Registers a callback for incoming mod channel messages.
+---@field register_on_liquid_transformed fun(func: OnLiquidTransformedCallback) Registers a callback for when liquids are transformed by the engine.
+---@field register_on_mapblocks_changed fun(func: OnMapblocksChangedCallback) Registers a callback for when mapblocks are changed.
+---@field settings Settings Settings object containing all settings from the main config file.
+---@field string_to_privs fun(str: string, delim?: string):priv_table Converts a string of privileges to a table.
+---@field privs_to_string fun(privs: priv_table, delim?: string):string Converts a table of privileges to a string.
+---@field get_player_privs fun(name: string):priv_table Gets a player's privileges.
+---@field check_player_privs fun(player_or_name: Player|string, ...: any):boolean, priv_table? Checks if a player has a set of privileges.
+---@field check_password_entry fun(name: string, entry: string, password: string):boolean Checks a password entry from the auth handler.
+---@field get_password_hash fun(name: string, raw_password: string):string Gets the password hash for a name/password pair.
+---@field get_player_ip fun(name: string):string? Gets the IP address of an online player.
+---@field get_auth_handler fun():table Gets the currently active authentication handler.
+---@field notify_authentication_modified fun(name?: string) Notifies that authentication data has been modified.
+---@field set_player_password fun(name: string, password_hash: string) Sets a player's password hash.
+---@field set_player_privs fun(name: string, privs: priv_table) Sets a player's privileges, overwriting existing ones.
+---@field change_player_privs fun(name: string, changes: priv_changes) Grants or revokes privileges for a player.
+---@field auth_reload fun() Reloads the authentication handler data.
+---@field chat_send_all fun(text: string) Sends a chat message to all players.
+---@field chat_send_player fun(name: string, text: string) Sends a chat message to a specific player.
+---@field format_chat_message fun(name: string, message: string):string Formats a chat message according to the `chat_message_format` setting.
+---@field set_node fun(pos: vector, node: NodeItemTable) Sets a node at a given position. Alias: `core.add_node`.
+---@field add_node fun(pos: vector, node: NodeItemTable) Alias for `core.set_node`.
+---@field bulk_set_node fun(positions: vector[], node: NodeItemTable) Sets the same node at multiple positions.
+---@field swap_node fun(pos: vector, node: NodeItemTable) Swaps a node at a position, keeping metadata and not running callbacks.
+---@field bulk_swap_node fun(positions: vector[], node: NodeItemTable) Swaps the same node at multiple positions.
+---@field remove_node fun(pos: vector) Removes a node at a given position.
+---@field get_node fun(pos: vector):NodeItemTable Gets the node at a given position.
+---@field get_node_or_nil fun(pos: vector):NodeItemTable? Gets the node at a given position, or nil if the area is unloaded.
+---@field get_node_light fun(pos: vector, timeofday?: number):number? Gets the light value at a position (0-15).
+---@field place_node fun(pos: vector, node: NodeItemTable, placer?: ObjectRef, actor?: ObjectRef) Places a node with the same effects as a player.
+---@field dig_node fun(pos: vector, digger?: ObjectRef, actor?: ObjectRef):boolean Digs a node with the same effects as a player.
+---@field punch_node fun(pos: vector, puncher?: ObjectRef, actor?: ObjectRef) Punches a node with the same effects as a player.
+---@field spawn_falling_node fun(pos: vector):(boolean, ObjectRef?) Turns a node into a falling node entity.
+---@field find_nodes_with_meta fun(pos1: vector, pos2: vector):vector[] Finds all nodes with metadata within a region.
+---@field get_meta fun(pos: vector):NodeMetaRef Get a reference to the metadata of a node.
+---@field get_node_timer fun(pos: vector):NodeTimerRef Get a reference to a node's timer.
+---@field add_entity fun(pos: vector, name: string, staticdata?: any):LuaEntity? Spawns a Lua-defined entity at a position.
+---@field add_item fun(pos: vector, item: string|ItemStack):ObjectRef? Spawns an item as an entity in the world.
+---@field get_player_by_name fun(name: string):Player? Get an ObjectRef to a player by name.
+---@field get_objects_inside_radius fun(center: vector, radius: number):ObjectRef[] Get all objects within a certain radius of a point.
+---@field objects_inside_radius fun(center: vector, radius: number):fun():ObjectRef Returns an iterator of valid objects inside a radius.
+---@field get_objects_in_area fun(min_pos: vector, max_pos: vector):ObjectRef[] Returns a list of ObjectRefs in an area.
+---@field objects_in_area fun(min_pos: vector, max_pos: vector):fun():ObjectRef Returns an iterator of valid objects in an area.
+---@field get_timeofday fun():number Get the time of day (0-1).
+---@field set_timeofday fun(val: number) Set the time of day (0-1).
+---@field get_gametime fun():number? Gets the time, in seconds, since the world was created.
+---@field find_node_near fun(pos: vector, radius: number, nodenames: string|string[], search_center?: boolean):vector? Finds the first node of a given type near a position.
+---@field find_nodes_in_area fun(pos1: vector, pos2: vector, nodenames: string|string[], grouped?: boolean):(vector[]|table<string, vector[]>), table<string, number>? Finds all nodes of given types in an area.
+---@field get_voxel_manip fun(pos1?: vector, pos2?: vector):VoxelManip Gets a Voxel Manipulator object.
+---@field line_of_sight fun(pos1: vector, pos2: vector):(boolean, vector?) Checks for a line of sight between two points.
+---@field raycast fun(pos1: vector, pos2: vector, objects?: boolean, liquids?: boolean, pointabilities?: table):Raycast Creates a Raycast object.
+---@field find_path fun(pos1: vector, pos2: vector, searchdistance: number, max_jump: number, max_drop: number, algorithm: '"A*_noprefetch"'|'"A*"'|'"Dijkstra"'):vector[]? Finds a walkable path between two points.
+---@field spawn_tree fun(pos: vector, treedef: table) Spawns an L-system tree.
+---@field spawn_tree_on_vmanip fun(vmanip: VoxelManip, pos: vector, treedef: table) Spawns an L-system tree on a VoxelManip.
+---@field fix_light fun(pos1: vector, pos2: vector):boolean Resets the light in a cuboid area.
+---@field check_single_for_falling fun(pos: vector) Checks a single node to see if it should fall.
+---@field check_for_falling fun(pos: vector) Checks a node and its neighbors to see if they should fall.
+---@field get_natural_light fun(pos: vector, timeofday?: number):number? Gets the natural light (sun/moon) value at a position.
+---@field get_artificial_light fun(param1: number):number Calculates artificial light from a param1 value.
+---@field find_nodes_in_area_under_air fun(pos1: vector, pos2: vector, nodenames: string|string[]):vector[] Finds all nodes of given types in an area that have air above them.
+---@field get_value_noise fun(noiseparams: NoiseParams):number Returns world-specific value noise.
+---@field set_gen_notify fun(flags: string, deco_ids?: number[], custom_ids?: string[]) Sets the types of on-generate notifications to collect.
+---@field get_gen_notify fun():(string, table, table) Gets the current on-generate notification settings.
+---@field get_decoration_id fun(decoration_name: string):number? Gets the ID for a decoration name.
+---@field get_mapgen_object fun(objectname: "biomemap"|"decorations"|"ores"|"heightmap"|"humiditymap"|"gennotify"):table? Gets a mapgen object.
+---@field get_heat fun(pos: vector):number? Returns the heat at a position.
+---@field get_humidity fun(pos: vector):number? Returns the humidity at a position.
+---@field get_biome_data fun(pos: vector):{biome: number, heat: number, humidity: number}? Returns biome data for a position.
+---@field get_biome_id fun(biome_name: string):number? Returns the ID for a biome name.
+---@field get_biome_name fun(biome_id: number):string? Returns the name for a biome ID.
+---@field get_mapgen_setting fun(name: string):string? Gets the active mapgen setting.
+---@field set_mapgen_setting fun(name: string, value: string, override_meta?: boolean) Sets a mapgen setting.
+---@field generate_ores fun(vm: VoxelManip, pos1?: vector, pos2?: vector) Generate all registered ores within a VoxelManip.
+---@field generate_decorations fun(vm: VoxelManip, pos1?: vector, pos2?: vector) Generate all registered decorations within a VoxelManip.
+---@field clear_objects fun(options?: {mode: "full"|"quick"}) Clear all objects in the environment.
+---@field load_area fun(pos1: vector, pos2?: vector) Load the mapblocks containing an area.
+---@field emerge_area fun(pos1: vector, pos2: vector, callback?: fun(blockpos: vector, action: number, calls_remaining: number, param: any), param?: any) Asynchronously load or generate all blocks in an area.
+---@field delete_area fun(pos1: vector, pos2: vector) Delete all mapblocks in an area.
+---@field transforming_liquid_add fun(pos: vector) Add a node to the liquid flow update queue.
+---@field get_node_max_level fun(pos: vector):number Get the maximum level for a leveled node.
+---@field get_node_level fun(pos: vector):number Get the level of a leveled node.
+---@field set_node_level fun(pos: vector, level: number):number Set the level of a leveled node.
+---@field add_node_level fun(pos: vector, level: number):number Add to the level of a leveled node.
+---@field get_node_boxes fun(box_type: "node_box"|"collision_box"|"selection_box", pos: vector, node?: NodeItemTable):number[][] Get the resolved node, collision, or selection boxes for a node.
+---@field get_spawn_level fun(x: number, z: number):number? Gets a suitable player spawn y-coordinate for a given (x, z).
+---@field get_day_count fun():number Returns number of days elapsed since world was created.
+---@field get_mapgen_edges fun(mapgen_limit?: number, chunksize?: number):(number, number) Returns the minimum and maximum possible generated node positions.
+---@field get_mapgen_setting_noiseparams fun(name: string):NoiseParams? Gets the active mapgen setting and returns it as a NoiseParams table.
+---@field set_mapgen_setting_noiseparams fun(name: string, value: NoiseParams, override_meta?: boolean) Sets a mapgen param from a NoiseParams table.
+---@field get_noiseparams fun(name: string):NoiseParams? Returns a table of the noiseparams for a given name.
+---@field set_noiseparams fun(name: string, noiseparams: NoiseParams, set_default?: boolean) Sets the noiseparams for a given name.
+---@field mod_channel_join fun(channel_name: string):ModChannel Joins a mod channel.
+---@field get_inventory fun(location: {type: "player", name: string} | {type: "node", pos: vector} | {type: "detached", name: string}):InvRef Get an inventory reference.
+---@field create_detached_inventory fun(name: string, callbacks: table, player_name?: string):InvRef Creates a detached inventory.
+---@field remove_detached_inventory fun(name: string):boolean Removes a detached inventory.
+---@field do_item_eat fun(hp_change: number, replace_with_item: string|ItemStack, itemstack: ItemStack, user: ObjectRef, pointed_thing: PointedThing):ItemStack Performs the item eat action.
+---@field get_craft_result fun(input: {method: "normal"|"cooking"|"fuel", width: number, items: item_list_table}):(table, table) Get the result of a craft.
+---@field get_craft_recipe fun(output: string):{method: "normal"|"cooking"|"fuel", width: number, items: item_list_table}? Get the recipe for an item.
+---@field get_all_craft_recipes fun(query_item: string):table[]? Gets all recipes for a given output item.
+---@field handle_node_drops fun(pos: vector, drops: string[], digger: ObjectRef) Handles the drops for a dug node.
+---@field item_place_node fun(itemstack: ItemStack, placer: ObjectRef, pointed_thing: PointedThing, param2?: number, prevent_after_place?: boolean):(ItemStack, vector?) Default `on_place` function for placing a node.
+---@field item_place fun(itemstack: ItemStack, placer: ObjectRef, pointed_thing: PointedThing, param2?: number):(ItemStack, vector?) Wrapper that calls `item_place_node` or `on_rightclick`.
+---@field item_drop fun(itemstack: ItemStack, dropper: ObjectRef, pos: vector):(ItemStack, ObjectRef?) Default `on_drop` function.
+---@field item_eat fun(hp_change: number, replace_with_item?: string|ItemStack):fun(itemstack:ItemStack, user:ObjectRef, pointed_thing:PointedThing):ItemStack Returns a function wrapper for `core.do_item_eat`.
+---@field node_punch fun(pos: vector, node: NodeItemTable, puncher: ObjectRef, pointed_thing: PointedThing) Default function for punching a node.
+---@field node_dig fun(pos: vector, node: NodeItemTable, digger: ObjectRef) Default function for digging a node.
+---@field show_formspec fun(playername: string, formname: string, formspec: string) Shows a formspec to a player.
+---@field close_formspec fun(playername: string, formname: string) Closes a formspec for a player.
+---@field formspec_escape fun(str: string):string Escapes special characters in a string for use in a formspec.
+---@field hypertext_escape fun(str: string):string Escapes characters for use in hypertext elements.
+---@field explode_table_event fun(event_string: string):{type: "INV"|"CHG"|"DCL", row: number, column: number} Explodes a table event string into a table.
+---@field explode_textlist_event fun(event_string: string):{type: "INV"|"CHG"|"DCL", index: number} Explodes a textlist event string into a table.
+---@field explode_scrollbar_event fun(event_string: string):{type: "INV"|"CHG"|"VAL", value: number} Explodes a scrollbar event string into a table.
+---@field show_death_screen fun(player: Player, reason?: PlayerHPChangeReason) Shows the death screen. Can be overridden.
+---@field sound_play fun(spec: SimpleSoundSpec, parameters?: SoundParams, ephemeral?: boolean):number? Plays a sound.
+---@field sound_stop fun(handle: number) Stops a sound.
+---@field sound_fade fun(handle: number, step: number, gain: number) Fades a sound to a new gain level.
+---@field after fun(time: number, func: function, ...: any):Job Calls a function after a specified time.
+---@field handle_async fun(func: function, callback: fun(...), ...: any) Queue a function to be run in an async environment.
+---@field register_async_dofile fun(path: string) Register a script to be run when an async environment is initialized.
+---@field register_mapgen_script fun(path: string) Register a script to be run when a mapgen environment is initialized.
+---@field save_gen_notify fun(id: string, data: any):boolean Saves data for the gennotify mechanism (mapgen environment only).
+---@field ipc_get fun(key: string):any Read a value from the shared IPC data area.
+---@field ipc_set fun(key: string, value: any) Write a value to the shared IPC data area.
+---@field ipc_cas fun(key: string, old_value: any, new_value: any):boolean Atomic Compare-and-Swap operation in the IPC data area.
+---@field ipc_poll fun(key: string, timeout: number):boolean Blocking wait until a non-nil value is present at an IPC key.
+---@field request_http_api fun():HTTPApiTable? Requests access to the HTTP API.
+---@field create_schematic fun(p1: vector, p2: vector, probability_list?: table, filename: string, slice_prob_list?: table) Create a schematic from a volume of the map.
+---@field serialize_schematic fun(schematic: SchematicSpecifier, format: "mts"|"lua", options?: {lua_use_comments?:boolean, lua_num_indent_spaces?:number}):string Return a serialized schematic string.
+---@field read_schematic fun(schematic: SchematicSpecifier, options?: {write_yslice_prob?: "none"|"low"|"all"}):table? Read a schematic and return a Lua table representation.
+---@field rollback_get_node_actions fun(pos: vector, range: number, seconds: number, limit: number):{actor:string, pos:vector, time:number, oldnode:NodeItemTable, newnode:NodeItemTable}[] Find node actions performed near a position.
+---@field rollback_revert_actions_by fun(actor: string, seconds: number):(boolean, string[]) Revert the latest actions of an actor.
+---@field add_particle fun(particle_definition: table) Add a single particle.
+---@field add_particlespawner fun(particlespawner_definition: table):number Add a particle spawner.
+---@field delete_particlespawner fun(id: number, player?: Player) Delete a particle spawner.
+---@field request_shutdown fun(message?: string, reconnect?: boolean, delay?: number) Request a server shutdown.
+---@field cancel_shutdown_requests fun() Cancel any pending delayed shutdown requests.
+---@field get_server_status fun(name: string, joined: boolean):string? Get the server status string.
+---@field get_server_uptime fun():number Get the server uptime in seconds.
+---@field get_server_max_lag fun():number? Get the current maximum server lag in seconds.
+---@field remove_player fun(name: string):0|1|2 Remove a player from the database (must be offline).
+---@field remove_player_auth fun(name: string):boolean Remove a player's authentication data.
+---@field dynamic_add_media fun(options: {filename?:string, filepath?:string, filedata?:string, to_player?:string, ephemeral?:boolean}, callback?: fun(name: string)):boolean Push a media file to clients dynamically.
+---@field get_ban_list fun():string[] Get a list of all bans.
+---@field get_ban_description fun(ip_or_name: string):string Get the description for a specific ban.
+---@field ban_player fun(name: string):boolean Ban the IP of a currently connected player.
+---@field unban_player_or_ip fun(ip_or_name: string) Unban a player or IP address.
+---@field kick_player fun(name: string, reason?: string, reconnect?: boolean):boolean Disconnect a player with a "Kicked: " reason.
+---@field disconnect_player fun(name: string, reason?: string, reconnect?: boolean):boolean Disconnect a player with a custom reason.
+---@field get_mod_storage fun():StorageRef Gets a reference to the mod's private storage.
+---@field place_schematic fun(pos: vector, schematic: SchematicSpecifier, rotation?: '"0"'|'"90"'|'"180"'|'"270"'|'"random"', replacements?: table<string, string>, force_placement?: boolean, flags?: string):vector? Places a schematic in the world.
+---@field place_schematic_on_vmanip fun(vmanip: VoxelManip, pos: vector, schematic: SchematicSpecifier, rotation?: '"0"'|'"90"'|'"180"'|'"270"'|'"random"', replacement?: table<string, string>, force_placement?: boolean, flags?: string):boolean? Places a schematic on a VoxelManip.
+---@field inventorycube fun(img1: string, img2: string, img3: string):string Returns a string for making an image of a cube.
+---@field get_pointed_thing_position fun(pointed_thing: PointedThing, above?: boolean):vector? Returns the position of a pointed thing.
+---@field dir_to_facedir fun(dir: vector, is6d?: boolean):number Convert a vector to a facedir value.
+---@field facedir_to_dir fun(facedir: number):vector Convert a facedir value back to a vector.
+---@field dir_to_fourdir fun(dir: vector):number Convert a vector to a 4-directional value.
+---@field fourdir_to_dir fun(fourdir: number):vector Convert a 4-directional value back to a vector.
+---@field dir_to_wallmounted fun(dir: vector):number Convert a vector to a wallmounted value.
+---@field wallmounted_to_dir fun(wallmounted: number):vector Convert a wallmounted value back to a vector.
+---@field dir_to_yaw fun(dir: vector):number Convert a vector to a yaw angle.
+---@field yaw_to_dir fun(yaw: number):vector Convert a yaw angle to a vector.
+---@field is_colored_paramtype fun(ptype: string):boolean Checks if a paramtype2 contains color information.
+---@field strip_param2_color fun(param2: number, paramtype2: string):number? Strips all but the color information from a param2 value.
+---@field get_node_drops fun(node: string|NodeItemTable, toolname?: string, tool?: ItemStack, digger?: ObjectRef, pos?: vector):string[] Returns the list of items dropped by a node.
+---@field item_pickup fun(itemstack: ItemStack, picker: ObjectRef, pointed_thing: PointedThing, time_from_last_punch: number, ...: any):ItemStack Default `on_pickup` function.
+---@field itemstring_with_palette fun(item: string|ItemStack|table, palette_index: number):string Creates an item string with palette color information.
+---@field itemstring_with_color fun(item: string|ItemStack|table, colorstring: ColorString):string Creates an item string with a static color.
+---@field is_valid_player_name fun(name: string):boolean Checks whether the given name could be used as a player name.
+---@field is_player fun(obj: ObjectRef):boolean Checks if an object is a player.
+---@field player_exists fun(name: string):boolean Checks if a player exists in the database.
+---@field serialize fun(data: any):string Converts a Lua value to a serialized string.
+---@field deserialize fun(str: string, safe?: boolean):any Converts a serialized string back to a Lua value.
+---@field write_json fun(data: table, styled?: boolean):(string?, string?) Converts a Lua table into a JSON string.
+---@field parse_json fun(str: string, nullvalue?: any, return_error?: boolean):(any, string?) Parses a JSON string into a Lua value.
+---@field is_protected fun(pos: vector, name: string):boolean Checks if a position is protected from a player.
+---@field record_protection_violation fun(pos: vector, name: string) Records a protection violation.
+---@field is_creative_enabled fun(name: string):boolean Checks if creative mode is enabled for a player.
+---@field request_insecure_environment fun():table? Requests access to the insecure environment.
+---@field hud_replace_builtin fun(name: "breath"|"health"|"minimap"|"hotbar", hud_definition: table) Replaces the definition of a built-in HUD element.
+---@field parse_relative_number fun(arg: string, relative_to: number):number? Helper for parsing an optionally relative number (e.g., "~5").
+---@field send_join_message fun(player_name: string) Function for sending the player join message. Can be overridden.
+---@field send_leave_message fun(player_name: string, timed_out: boolean) Function for sending the player leave message. Can be overridden.
+---@field hash_node_position fun(pos: vector):number Gives a unique numeric encoding for a node position.
+---@field get_position_from_hash fun(hash: number):vector Inverse transform of `hash_node_position`.
+---@field get_item_group fun(name: string, group: string):number Get rating of a group for an item.
+---@field raillike_group fun(name: string):number Returns the rating of the `connect_to_raillike` group.
+---@field get_content_id fun(name: string):number Gets the internal content ID of an item/node name.
+---@field get_name_from_content_id fun(content_id: number):string Gets the name from a content ID.
+---@field compress fun(data: string, method: "deflate"|"zstd", ...: any):string Compress a string of data.
+---@field decompress fun(compressed_data: string, method: "deflate"|"zstd", ...: any):string Decompress a string of data.
+---@field rgba fun(red: number, green: number, blue: number, alpha?: number):ColorString Returns a ColorString from RGBA values.
+---@field encode_base64 fun(data: string):string Encodes a string in base64.
+---@field decode_base64 fun(encoded_data: string):string? Decodes a base64 string.
+---@field is_area_protected fun(pos1: vector, pos2: vector, player_name: string, interval?: number):vector? Checks if an area is protected from a player.
+---@field rotate_and_place fun(itemstack: ItemStack, placer: ObjectRef, pointed_thing: PointedThing, infinitestacks?: boolean, orient_flags?: table, prevent_after_place?: boolean):ItemStack Predicts desired node orientation and places it.
+---@field rotate_node fun(itemstack: ItemStack, placer: ObjectRef, pointed_thing: PointedThing):ItemStack Wrapper for `rotate_and_place` with creative/sneak checks.
+---@field calculate_knockback fun(player: Player, hitter: ObjectRef, time_from_last_punch: number, tool_capabilities: table, dir: vector, distance: number, damage: number):number Calculates player knockback. Can be overridden.
+---@field forceload_block fun(pos: vector, transient?: boolean, limit?: number):boolean Forceloads a mapblock, keeping it active.
+---@field forceload_free_block fun(pos: vector, transient?: boolean) Stops forceloading a mapblock.
+---@field compare_block_status fun(pos: vector, condition: "unknown"|"emerging"|"loaded"|"active"):boolean? Checks the status of the mapblock at a position.
+---@field global_exists fun(name: string):boolean Checks if a global variable has been set.
+---@field register_portable_metatable fun(name: string, mt: table) Register a metatable to be preserved across Lua environments.
+---@field registered_items table<string, table> Map of registered items, indexed by name.
+---@field registered_nodes table<string, table> Map of registered node definitions, indexed by name.
+---@field registered_craftitems table<string, table> Map of registered craft item definitions, indexed by name.
+---@field registered_tools table<string, table> Map of registered tool definitions, indexed by name.
+---@field registered_entities table<string, table> Map of registered entity prototypes, indexed by name.
+---@field object_refs table<number, ObjectRef> Map of object references, indexed by active object id.
+---@field luaentities table<number, ObjectRef> Map of Lua entities, indexed by active object id.
+---@field registered_abms table[] List of ABM definitions.
+---@field registered_lbms table[] List of LBM definitions.
+---@field registered_aliases table<string, string> Map of registered aliases, indexed by name.
+---@field registered_ores table<string, table> Map of registered ore definitions.
+---@field registered_biomes table<string, table> Map of registered biome definitions.
+---@field registered_decorations table<string, table> Map of registered decoration definitions.
+---@field registered_chatcommands table<string, table> Map of registered chat command definitions, indexed by name.
+---@field registered_privileges table<string, table> Map of registered privilege definitions, indexed by name.
+---@field registered_on_chat_messages function[]
+---@field registered_on_chatcommands function[]
+---@field registered_globalsteps function[]
+---@field registered_on_punchnodes function[]
+---@field registered_on_placenodes function[]
+---@field registered_on_dignodes function[]
+---@field registered_on_generateds function[]
+---@field registered_on_newplayers function[]
+---@field registered_on_dieplayers function[]
+---@field registered_on_respawnplayers function[]
+---@field registered_on_prejoinplayers function[]
+---@field registered_on_joinplayers function[]
+---@field registered_on_leaveplayers function[]
+---@field registered_on_player_receive_fields function[]
+---@field registered_on_cheats function[]
+---@field registered_on_crafts function[]
+---@field registered_craft_predicts function[]
+---@field registered_on_item_eats function[]
+---@field registered_on_item_pickups function[]
+---@field registered_on_punchplayers function[]
+---@field registered_on_authplayers function[]
+---@field registered_on_player_inventory_actions function[]
+---@field registered_allow_player_inventory_actions function[]
+---@field registered_on_rightclickplayers function[]
+---@field registered_on_mods_loaded function[]
+---@field registered_on_shutdown function[]
+---@field registered_on_protection_violation function[]
+---@field registered_on_priv_grant function[]
+---@field registered_on_priv_revoke function[]
+---@field registered_can_bypass_userlimit function[]
+---@field registered_on_modchannel_message function[]
+---@field registered_on_liquid_transformed function[]
+---@field registered_on_mapblocks_changed function[]

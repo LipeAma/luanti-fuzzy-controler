@@ -1,0 +1,4 @@
+---@meta
+---@class Raycast
+---@field next fun(self: Raycast):PointedThingRaycast? Returns the next thing pointed to by the ray, or nil if the end is reached.
+---@operator call:fun():PointedThingRaycast|nil Iterator metamethod to allow usage in a `for` loop.

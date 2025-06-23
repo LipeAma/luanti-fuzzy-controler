@@ -1,0 +1,78 @@
+---@alias BoneOverrideProperty {vec?: vector, interpolation?: number, absolute?: boolean}
+---@alias BoneOverride {position?: BoneOverrideProperty, rotation?: BoneOverrideProperty, scale?: BoneOverrideProperty}
+---@alias NametagAttributes {text: string, color: ColorSpec, bgcolor: ColorSpec|false}
+---@alias PlayerMetaRef table
+---@alias PhysicsOverrideTable { speed?: number, speed_walk?: number, speed_climb?: number, speed_crouch?: number, speed_fast?: number, jump?: number, gravity?: number, liquid_fluidity?: number, liquid_fluidity_smooth?: number, liquid_sink?: number, acceleration_default?: number, acceleration_air?: number, acceleration_fast?: number, sneak?: boolean, sneak_glitch?: boolean, new_move?: boolean }
+---@alias SkyParameters { base_color?: ColorSpec, body_orbit_tilt?: number, type?: "regular"|"skybox"|"plain", textures?: string[], clouds?: boolean, sky_color?: table, fog?: table }
+---@alias SunParameters { visible?: boolean, texture?: string, tonemap?: string, sunrise?: string, sunrise_visible?: boolean, scale?: number }
+---@alias MoonParameters { visible?: boolean, texture?: string, tonemap?: string, scale?: number }
+---@alias StarParameters { visible?: boolean, day_opacity?: number, count?: number, star_color?: ColorSpec, scale?: number }
+---@alias CloudParameters { density?: number, color?: ColorSpec, ambient?: ColorSpec, height?: number, thickness?: number, speed?: vector, shadow?: ColorSpec }
+---@alias LightingParameters { saturation?: number, shadows?: { intensity: number, tint: {r:number,g:number,b:number} }, exposure?: { luminance_min: number, luminance_max: number, exposure_correction: number, speed_dark_bright: number, speed_bright_dark: number, center_weight_power: number }, bloom?: { intensity: number, strength_factor: number, radius: number }, volumetric_light?: { strength: number } }
+---@alias NodeItemTable {name: string, param1?: number, param2?: number}
+---@alias SchematicSpecifier string|{name?:string, data?:table, size?:{x:number, y:number, z:number}, on_load?:function, filename?: string, filepath?: string}
+---@alias SimpleSoundSpec string|table
+---@alias priv_changes table<string, boolean>
+---@alias priv_table table<string, true>
+---@alias item_list_table table<number, string|ItemStack>
+---@alias NoiseParams {offset:number, scale:number, spread:{x:number, y:number, z:number}, seed:number, octaves:number, persistence:number, lacunarity:number, flags?:string}
+---@alias MapgenParams {mgname: string, seed: number, chunksize: number, water_level: number, flags: string}
+---@alias InvLocation {type: "player"|"node"|"detached"|"undefined", name?: string, pos?: vector}
+---@alias ColorString string A string representing a color, as defined by CSS Color Module Level 4. Can be #RGB, #RGBA, #RRGGBB, #RRGGBBAA, a color name, or colorname#AA.
+---@alias ColorSpec ColorString | integer | ColorTable A type that specifies a 32-bit color. Can be a ColorString, a raw 32-bit ARGB integer, or a ColorTable.
+---@alias SelectionBox {[1]:number, [2]:number, [3]:number, [4]:number, [5]:number, [6]:number, rotate?:boolean}
+
+
+---@alias OnHpChangeCallback fun(player: Player, hp_change: number, reason: PlayerHPChangeReason): number?
+---@alias OnPlaceNodeCallback fun(pos: vector, newnode: NodeItemTable, placer: ObjectRef?, oldnode: NodeItemTable, itemstack: ItemStack, pointed_thing: PointedThing): boolean?
+---@alias OnDigNodeCallback fun(pos: vector, oldnode: NodeItemTable, digger: ObjectRef)
+---@alias OnPunchNodeCallback fun(pos: vector, node: NodeItemTable, puncher: ObjectRef, pointed_thing: PointedThing)
+---@alias OnGeneratedCallback fun(minp: vector, maxp: vector, blockseed: number)
+---@alias OnNewPlayerCallback fun(player: Player)
+---@alias OnPunchPlayerCallback fun(player: Player, hitter: ObjectRef?, time_from_last_punch: number?, tool_capabilities: table?, dir: vector?, damage: number): boolean?
+---@alias OnRightClickPlayerCallback fun(player: Player, clicker: ObjectRef)
+---@alias OnDiePlayerCallback fun(player: Player, reason: PlayerHPChangeReason)
+---@alias OnRespawnPlayerCallback fun(player: Player): boolean?
+---@alias OnPreJoinPlayerCallback fun(name: string, ip: string): string?
+---@alias OnJoinPlayerCallback fun(player: ObjectRef, last_login: number?)
+---@alias OnLeavePlayerCallback fun(player: ObjectRef, timed_out: boolean)
+---@alias OnAuthPlayerCallback fun(name: string, ip: string, is_success: boolean)
+---@alias OnCheatCallback fun(player: Player, cheat: {type: string})
+---@alias OnChatMessageCallback fun(name: string, message: string): boolean?
+---@alias OnChatCommandCallback fun(name: string, command: string, params: string): boolean?
+---@alias OnPlayerReceiveFieldsCallback fun(player: Player, formname: string, fields: table): boolean?
+---@alias OnCraftCallback fun(itemstack: ItemStack, player: Player, old_craft_grid: item_list_table, craft_inv: InvRef): ItemStack?
+---@alias CraftPredictCallback fun(itemstack: ItemStack, player: Player, old_craft_grid: item_list_table, craft_inv: InvRef)
+---@alias AllowPlayerInventoryActionCallback fun(player: Player, action: string, inventory: InvRef, inventory_info: table): number?
+---@alias OnPlayerInventoryActionCallback fun(player: Player, action: string, inventory: InvRef, inventory_info: table)
+---@alias OnProtectionViolationCallback fun(pos: vector, name: string)
+---@alias OnItemEatCallback fun(hp_change: number, replace_with_item: string, itemstack: ItemStack, user: ObjectRef, pointed_thing: PointedThing): ItemStack?
+---@alias OnItemPickupCallback fun(itemstack: ItemStack, picker: ObjectRef, pointed_thing: PointedThing, time_from_last_punch: number, ...): ItemStack?
+---@alias OnPrivGrantCallback fun(name: string, granter: string?, priv: string)
+---@alias OnPrivRevokeCallback fun(name: string, revoker: string?, priv: string)
+---@alias CanBypassUserlimitCallback fun(name: string, ip: string): boolean?
+---@alias OnModChannelMessageCallback fun(channel_name: string, sender: string, message: string)
+---@alias OnLiquidTransformedCallback fun(pos_list: vector[], node_list: NodeItemTable[])
+---@alias OnMapblocksChangedCallback fun(modified_blocks: table<number, true>, modified_block_count: number)
+---@alias AllowMoveCallback fun(inv: InvRef, from_list: string, from_index: number, to_list: string, to_index: number, count: number, player: ObjectRef):number
+---@alias AllowPutCallback fun(inv: InvRef, listname: string, index: number, stack: ItemStack, player: ObjectRef):number
+---@alias AllowTakeCallback fun(inv: InvRef, listname: string, index: number, stack: ItemStack, player: ObjectRef):number
+---@alias OnMoveCallback fun(inv: InvRef, from_list: string, from_index: number, to_list: string, to_index: number, count: number, player: ObjectRef)
+---@alias OnPutCallback fun(inv: InvRef, listname: string, index: number, stack: ItemStack, player: ObjectRef)
+---@alias OnTakeCallback fun(inv: InvRef, listname: string, index: number, stack: ItemStack, player: ObjectRef)
+---@alias DetachedInventoryCallbacks { allow_move?: AllowMoveCallback, allow_put?: AllowPutCallback, allow_take?: AllowTakeCallback, on_move?: OnMoveCallback, on_put?: OnPutCallback, on_take?: OnTakeCallback } A table of optional callbacks for a detached inventory.
+---@alias ChatCommandCallback fun(name: string, param: string):(boolean, string?) The function called when a command is run.
+--
+---@alias OnActivateCallback fun(self: EntityTable, staticdata: string, dtime_s: number)
+---@alias OnDeactivateCallback fun(self: EntityTable, removal: boolean)
+---@alias OnStepCallback fun(self: EntityTable, dtime: number, moveresult: MoveResult)
+---@alias OnPunchCallback fun(self: EntityTable, puncher: ObjectRef, time_from_last_punch: number, tool_capabilities: table, dir: vector, damage: number):boolean?
+---@alias OnDeathCallback fun(self: EntityTable, killer: ObjectRef)
+---@alias OnRightClickCallback fun(self: EntityTable, clicker: ObjectRef)
+---@alias OnAttachChildCallback fun(self: EntityTable, child: ObjectRef)
+---@alias OnDetachChildCallback fun(self: EntityTable, child: ObjectRef)
+---@alias OnDetachCallback fun(self: EntityTable, parent: ObjectRef)
+---@alias GetStaticdataCallback fun(self: EntityTable):string
+
+---@alias PointedThing (PointedNothing|PointedObject|PointedNode)
+---@alias PointedThingRaycast (PointedNothingRaycast|PointedObjectRaycast|PointedNodeRaycast)

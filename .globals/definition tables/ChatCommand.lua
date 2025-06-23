@@ -1,0 +1,13 @@
+---@meta
+---Defines the function and required privileges for a chat command.
+---
+---Note on the `params` field syntax:
+---* `<name>`: A required placeholder.
+---* `[param]`: An optional parameter.
+---* `<p1>|<p2>`: An exclusive or parameter.
+---* `(<p1> <p2>)`: A group of parameters.
+---@class ChatCommandDefinition
+---@field params string A short parameter description for help text.
+---@field description string A general description of the command's purpose.
+---@field privs priv_table A table of required privileges to run the command.
+---@field func ChatCommandCallback The function called when the command is run.

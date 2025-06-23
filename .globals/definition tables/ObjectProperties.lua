@@ -1,0 +1,37 @@
+---@meta
+---@class ObjectProperties
+---@field hp_max? number Defines the maximum and default HP of the object. Default: 20 for players, 10 for entities.
+---@field breath_max? number For players only. Defines the maximum amount of "breath". Default: 10.
+---@field zoom_fov? number For players only. Zoom FOV in degrees. 0 disables zoom. Default: 15 (creative), 0 (survival).
+---@field eye_height? number For players only. Camera height above feet position in nodes. Default: 1.625.
+---@field physical? boolean If true, collides with `walkable` nodes. Default: false.
+---@field collide_with_objects? boolean If true, collides with other objects if physical is true. Default: true.
+---@field collisionbox? number[] Box in the format `{ xmin, ymin, zmin, xmax, ymax, zmax }`. Default: `{-0.5, -0.5, -0.5, 0.5, 0.5, 0.5}`.
+---@field selectionbox? SelectionBox Box in the format `{ xmin, ymin, zmin, xmax, ymax, zmax }`. If `rotate=true`, it rotates with the object.
+---@field pointable? boolean | "blocking" Can be `true` (pointable), `false` (point-through), or `"blocking"` (pointable but not selectable).
+---@field visual? "cube" | "sprite" | "upright_sprite" | "mesh" | "wielditem" | "item" | "node" The visual representation of the object.
+---@field visual_size? {x: number, y: number, z?: number} Multipliers for the visual size.
+---@field mesh? string File name of the mesh when using "mesh" visual.
+---@field textures? string[] Required textures depending on the visual type.
+---@field colors? any[] Currently unused.
+---@field node? {name: string, param1?: number, param2?: number} Node to show when using the "node" visual.
+---@field use_texture_alpha? boolean If true, use the texture's alpha channel for transparency.
+---@field spritediv? {x: number, y: number} Defines the number of {columns, rows} in a spritesheet texture.
+---@field initial_sprite_basepos? {x: number, y: number} Defines the initial {column, row} of the frame in a spritesheet.
+---@field is_visible? boolean If false, the object is invisible and cannot be pointed at. Default: true.
+---@field makes_footstep_sound? boolean If true, the object can make footstep sounds. Default: false.
+---@field automatic_rotate? number Constant rotation in radians per second. 0 to disable.
+---@field stepheight? number If positive, the object will climb up walkable nodes within this height difference. Default: 0.
+---@field automatic_face_movement_dir? number | false Automatically set yaw to movement direction, with an offset in degrees. `false` to disable.
+---@field automatic_face_movement_max_rotation_per_sec? number Limit automatic rotation to this value in degrees per second. No limit if <= 0.
+---@field backface_culling? boolean Set to false to disable backface culling for "mesh" and "cube" visuals. Default: true.
+---@field glow? number Adds extra lighting to the texture color. < 0 disables light's effect.
+---@field nametag? string The name to display on the head of the object.
+---@field nametag_color? ColorSpec Sets the text color of the nametag.
+---@field nametag_bgcolor? ColorSpec | false Sets the background color of the nametag. `false` for user settings default.
+---@field infotext? string Informational text displayed when pointing at the object.
+---@field static_save? boolean If false, the object will not be saved when its block is unloaded. Default: true.
+---@field damage_texture_modifier? string Texture modifier applied for a short duration when the object is hit. Default: "^[brighten".
+---@field shaded? boolean If false, diffuse lighting on the entity is disabled. Default: true.
+---@field show_on_minimap? boolean If true, the entity will appear on the minimap. Default: true for players, false otherwise.
+

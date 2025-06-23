@@ -1,0 +1,19 @@
+---@meta
+---@class InvRef
+---@field is_empty fun(self: InvRef, listname: string):boolean Returns `true` if the specified list is empty.
+---@field get_size fun(self: InvRef, listname: string):number Gets the size of an inventory list.
+---@field set_size fun(self: InvRef, listname: string, size: number):boolean? Sets the size of an inventory list. A new list is created if it doesn't exist. Setting size to 0 deletes the list. Returns `false` on error.
+---@field get_width fun(self: InvRef, listname: string):number Gets the width of an inventory list.
+---@field set_width fun(self: InvRef, listname: string, width: number):boolean? Sets the width of an inventory list, currently used for crafting. Returns `false` on error.
+---@field get_stack fun(self: InvRef, listname: string, i: number):ItemStack Gets a copy of the ItemStack at the given index in the list.
+---@field set_stack fun(self: InvRef, listname: string, i: number, stack: ItemStack) Copies an ItemStack to the specified index in the list.
+---@field get_list fun(self: InvRef, listname: string):ItemStack[]? Returns the full list as an array of ItemStacks, or `nil` if the list doesn't exist.
+---@field set_list fun(self: InvRef, listname: string, list: ItemStack[]) Sets the full content of an inventory list. The list size will not change.
+---@field get_lists fun(self: InvRef):table<string, ItemStack[]> Returns a table that maps list names to their corresponding inventory lists.
+---@field set_lists fun(self: InvRef, lists: table<string, ItemStack[]>) Sets multiple inventory lists at once. The list sizes will not change.
+---@field add_item fun(self: InvRef, listname: string, stack: ItemStack):ItemStack Adds an item somewhere in the list, returns the leftover ItemStack.
+---@field room_for_item fun(self: InvRef, listname: string, stack: ItemStack):boolean Returns `true` if the stack of items can be fully added to the list.
+---@field contains_item fun(self: InvRef, listname: string, stack: ItemStack, match_meta?: boolean):boolean Returns `true` if the stack of items can be fully taken from the list. Ignores wear.
+---@field remove_item fun(self: InvRef, listname: string, stack: ItemStack, match_meta?: boolean):ItemStack Takes as many items as specified from the list, returns the items that were actually removed.
+---@field get_location fun(self: InvRef):InvLocation Returns a location table compatible with `core.get_inventory(location)`. Returns `{type="undefined"}` if location is not known.
+

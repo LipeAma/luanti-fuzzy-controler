@@ -1,0 +1,37 @@
+---@meta
+---@class vector
+---@field x number The x-component of the vector.
+---@field y number The y-component of the vector.
+---@field z number The z-component of the vector.
+---@field metatable table
+---@field new fun(a: number|vector?, b?: number, c?: number):vector Returns a new vector (a, b, c).
+---@field zero fun():vector Returns a new vector (0, 0, 0).
+---@field random_direction fun():vector Returns a new vector of length 1, pointing into a direction chosen uniformly at random.
+---@field copy fun(v: vector):vector Returns a copy of the vector v.
+---@field from_string fun(s: string, init?: integer):(vector?, number?) Returns `v, np`, where `v` is a vector read from the given string `s`.
+---@field to_string fun(v: vector):string Returns a string of the form `"(x, y, z)"`. `tostring(v)` does the same.
+---@field direction fun(p1: vector, p2: vector):vector Returns a vector of length 1 with direction from p1 to p2.
+---@field distance fun(p1: vector, p2: vector):number Returns zero or a positive number, the distance between p1 and p2.
+---@field length fun(v: vector):number Returns zero or a positive number, the length of vector v.
+---@field normalize fun(v: vector):vector Returns a vector of length 1 with the direction of vector v.
+---@field floor fun(v: vector):vector Returns a vector, each dimension rounded down.
+---@field ceil fun(v: vector):vector Returns a vector, each dimension rounded up.
+---@field round fun(v: vector):vector Returns a vector, each dimension rounded to the nearest integer.
+---@field sign fun(v: vector, tolerance?: number):vector Returns a vector where math.sign was called for each component.
+---@field abs fun(v: vector):vector Returns a vector with absolute values for each component.
+---@field apply fun(v: vector, func: fun(n: number, ...): number, ...: any):vector Returns a vector where the function `func` has been applied to each component.
+---@field combine fun(v: vector, w: vector, func: fun(a: number, b: number): number):vector Returns a vector where `func` has combined both components of `v` and `w`.
+---@field equals fun(v1: vector, v2: vector):boolean Returns a boolean, true if the vectors are identical.
+---@field sort fun(v1: vector, v2: vector):(vector, vector) Returns in order minp, maxp vectors of the cuboid defined by v1, v2.
+---@field angle fun(v1: vector, v2: vector):number Returns the angle between v1 and v2 in radians.
+---@field dot fun(v1: vector, v2: vector):number Returns the dot product of v1 and v2.
+---@field cross fun(v1: vector, v2: vector):vector Returns the cross product of v1 and v2.
+---@field offset fun(v: vector, x: number, y: number, z: number):vector Returns the sum of the vectors v and (x, y, z).
+---@field check fun(v: any):boolean Returns a boolean value indicating whether v is a real vector.
+---@field in_area fun(pos: vector, min: vector, max: vector):boolean Returns a boolean value indicating if `pos` is inside the area formed by `min` and `max`.
+---@field random_in_area fun(min: vector, max: vector):vector Returns a random integer position in the area formed by `min` and `max`.
+---@field add fun(v: vector, x: vector|number):vector Returns a vector. If x is a vector: Returns the sum of v and x. If x is a number: Adds x to each component of v.
+---@field subtract fun(v: vector, x: vector|number):vector Returns a vector. If x is a vector: Returns the difference of v subtracted by x. If x is a number: Subtracts x from each component of v.
+---@field rotate fun(v: vector, r: vector):vector Applies the rotation `r` to `v` and returns the result.
+---@field rotate_around_axis fun(v1: vector, v2: vector, a: number):vector Returns v1 rotated around axis v2 by `a` radians.
+---@field dir_to_rotation fun(direction: vector, up?: vector):vector Returns a rotation vector for `direction` pointing forward using `up` as the up vector.

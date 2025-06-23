@@ -1,0 +1,13 @@
+---@class EntityDefinition
+---@field initial_properties? ObjectProperties A table of initial object properties.
+---@field on_activate? OnActivateCallback Called when the entity is activated (loaded).
+---@field on_deactivate? OnDeactivateCallback Called when the entity is deactivated (unloaded).
+---@field on_step? OnStepCallback Called on every server step for this entity.
+---@field on_punch? OnPunchCallback Called when the entity is punched.
+---@field on_death? OnDeathCallback Called when the entity's HP reaches 0 after a punch.
+---@field on_rightclick? OnRightClickCallback Called when a player right-clicks the entity.
+---@field on_attach_child? OnAttachChildCallback Called when another object is attached to this entity.
+---@field on_detach_child? OnDetachChildCallback Called when a child object is detached from this entity.
+---@field on_detach? OnDetachCallback Called when this entity is detached from its parent.
+---@field get_staticdata? GetStaticdataCallback Called before the entity is saved. Must return a string.
+
